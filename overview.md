@@ -1,4 +1,4 @@
-# Comment Translator for Visual Studio 2021
+# Comment Translator for Visual Studio 2022
 
 [![Build status](https://dev.azure.com/netcorevip/BuildsGit/_apis/build/status/comment-translator-china-CI)](https://dev.azure.com/netcorevip/BuildsGit/_build/latest?definitionId=9)[![Build status](https://camo.githubusercontent.com/378681ed7a5fb7af01aeb954371b93a75ce42f1a/68747470733a2f2f63692e6170707665796f722e636f6d2f6170692f70726f6a656374732f7374617475732f6a3264783675386c707777693735676e3f7376673d74727565)](https://ci.appveyor.com/project/corevip/comment-translator-china)
 
@@ -10,7 +10,7 @@
 
 现进行修改已便使用。
 
-支持vs版本：Visual Studio 2021，其他版本均不支持。
+支持vs版本：Visual Studio 2022，其他版本均不支持。
 
 ### 初始化设置
 
