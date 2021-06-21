@@ -61,6 +61,7 @@ namespace CommentTranslator.Presentation
             bdError.Visibility = Visibility.Collapsed;
             bdTranslatedText.Visibility = Visibility.Collapsed;
             tblDirection.Text = "翻译中...";
+
             Task.Run(() => CommentTranslatorPackage.TranslateClient.TranslateAsync(text))
                 .ContinueWith((data) =>
                 {

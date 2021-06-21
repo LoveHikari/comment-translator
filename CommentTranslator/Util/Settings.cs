@@ -15,12 +15,12 @@ namespace CommentTranslator.Util
         /// <summary>
         /// 待翻译语言
         /// </summary>
-        public string TranslateFrom { get; set; }
+        public LanguageEnum TranslateFrom { get; set; }
 
         /// <summary>
         /// 目标语言
         /// </summary>
-        public string TranslatetTo { get; set; }
+        public LanguageEnum TranslatetTo { get; set; }
         /// <summary>
         /// 打开文件自动翻译
         /// </summary>

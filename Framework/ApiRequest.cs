@@ -9,11 +9,11 @@
         /// <summary>
         /// 请求语言
         /// </summary>
-        public string FromLanguage { get; set; }
+        public LanguageEnum FromLanguage { get; set; }
         /// <summary>
         /// 目标语言
         /// </summary>
-        public string ToLanguage { get; set; }
+        public LanguageEnum ToLanguage { get; set; }
         /// <summary>
         /// 翻译内容
         /// </summary>

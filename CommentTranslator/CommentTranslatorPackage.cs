@@ -42,7 +42,8 @@ namespace CommentTranslator
         /// CommentTranslatorPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "15fe96fc-8fd3-4e06-b322-deba11e09dfc";
-        public static Settings Settings { get; set; }
+
+        public static Settings Settings { get; set; } = new Settings();
         public static TranslateClient TranslateClient { get; set; }
 
         //public DTE2 DTE { get; set; }
@@ -69,7 +70,6 @@ namespace CommentTranslator
             await TranslateCommand.InitializeAsync(this);
 
             // 加载配置项
-            Settings = new Settings();
             Settings.ReloadSetting((OptionPageGrid)GetDialogPage(typeof(OptionPageGrid)));
 
             // 创建连接返回翻译内容

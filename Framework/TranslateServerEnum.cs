@@ -2,7 +2,8 @@
 {
     public enum TranslateServerEnum
     {
-        谷歌,
+        Google,
+        Bing,
         百度,
         有道
     }

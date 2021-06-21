@@ -12,7 +12,7 @@ namespace CommentTranslator.Presentation
         [Category("Server")]
         [DisplayName("翻译服务器")]
         [Description("翻译服务器")]
-        public TranslateServerEnum TranslateServer { get; set; } = TranslateServerEnum.谷歌;
+        public TranslateServerEnum TranslateServer { get; set; } = TranslateServerEnum.Google;
 
         /// <summary>
         /// Gets or sets a value indicating whether 待翻译语言
@@ -20,7 +20,7 @@ namespace CommentTranslator.Presentation
         [Category("Translate")]
         [DisplayName("待翻译语言")]
         [Description("待翻译语言类型")]
-        public string TranslateFrom { get; set; } = "en";
+        public LanguageEnum TranslateFrom { get; set; } = LanguageEnum.Auto;
 
         /// <summary>
         /// Gets or sets a value indicating whether 目标语言
@@ -28,7 +28,7 @@ namespace CommentTranslator.Presentation
         [Category("Translate")]
         [DisplayName("翻译成语言")]
         [Description("翻译为目标语言类型")]
-        public string TranslatetTo { get; set; } = "zh-CN";
+        public LanguageEnum TranslatetTo { get; set; } = GetCurrentCulture();
 
         ///// <summary>
         ///// Gets or sets a value indicating whether 自动检测语言
@@ -79,5 +79,23 @@ namespace CommentTranslator.Presentation
 
         // 【小试插件开发】给Visual Studio装上自己定制的功能来提高代码调试效率
         // https://www.cnblogs.com/hohoa/p/6617619.html?utm_source=gold_browser_extension
+
+        private static LanguageEnum GetCurrentCulture()
+        {
+            string currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+            switch (currentCulture)
+            {
+                case "ja-JP":
+                    return LanguageEnum.日本語;
+                case "zh-CN":
+                    return LanguageEnum.简体中文;
+                case "zh-TW":
+                    return LanguageEnum.繁體中文;
+                case "en-US":
+                    return LanguageEnum.English;
+                default:
+                    return LanguageEnum.简体中文;
+            }
+        }
     }
 }

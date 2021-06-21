@@ -2,17 +2,17 @@
 
 [![Build status](https://dev.azure.com/netcorevip/BuildsGit/_apis/build/status/comment-translator-china-CI)](https://dev.azure.com/netcorevip/BuildsGit/_build/latest?definitionId=9)[![Build status](https://ci.appveyor.com/api/projects/status/j2dx6u8lpwwi75gn?svg=true)](https://ci.appveyor.com/project/corevip/comment-translator-china)
 
-从[marketplace](https://marketplace.visualstudio.com/items?itemName=netcorevip.CommentTranslatorChina)下载此扩展程序
+从[marketplace](https://marketplace.visualstudio.com/items?itemName=Hikari.CommentTranslator2021)下载此扩展程序
 
 ------
 
 选中文本翻译，未选中默认翻译光标所在行，在打开文件中自动翻译注释。
 
-因为[Comment Translator](https://marketplace.visualstudio.com/items?itemName=NguynThunTan.CommentTranslator)扩展在中国(你懂滴原因)无法访问配置的翻译地址，
+因为[Comment Translator](https://marketplace.visualstudio.com/items?itemName=NguynThunTan.CommentTranslator)已经不再维护，
 
-现修改为使用[https://translate.google.cn/](https://translate.google.cn/)翻译。
+现进行修改已便使用。
 
-支持vs版本：Visual Studio 2017以上，Visual Studio 2017以下未测试。
+支持vs版本：Visual Studio 2021，其他版本均不支持。
 
 
 
@@ -21,15 +21,6 @@
 需要设置谷歌TKK值才能使用翻译功能，下一步骤自动设置
 
 [![设置](Images/Options.png)
-
-### 自动设置TKK
-
-> 如果获取失败打开浏览器手动获取tkk设置
-
-![自动设置tkk](Images/SetTkk.gif)
-
-
-
 
 
 ## 功能
