@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="CommentTranslator.2a67f6c0-6b7e-484f-9b6c-5f4e8ed22c69" Version="1.0.0" Language="zh-CN" Publisher="Hikari" />
-        <DisplayName>Comment Translator for Visual Studio 2022</DisplayName>
+        <Identity Id="CommentTranslator.2a67f6c0-6b7e-484f-9b6c-5f4e8ed22c69" Version="1.0.1" Language="zh-CN" Publisher="Hikari" />
+        <DisplayName>CommentTranslator64</DisplayName>
         <Description xml:space="preserve">Extension of visual studio that automatic translate comment in you open file.
 选择文本翻译，打开文件自动翻译注释。
 テキスト翻訳を選択し、ファイルを開いてコメントを自動的に翻訳します。</Description>

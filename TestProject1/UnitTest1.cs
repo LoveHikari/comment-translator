@@ -1,5 +1,5 @@
-using System;
 using Framework;
+using System;
 using Xunit;
 
 namespace TestProject1
@@ -9,17 +9,8 @@ namespace TestProject1
         [Fact]
         public void Test1()
         {
-            //var request = new ApiRequest()
-            //{
-            //    TranslateServer = TranslateServerEnum.Google,
-            //    FromLanguage = LanguageEnum.English,
-            //    ToLanguage = LanguageEnum.简体中文,
-            //    Body = "TranslateServer"
-            //};
-            //ApiClient apiClient = new ApiClient();
-            //var v = apiClient.Execute(request).Result;
-            var v = System.Globalization.CultureInfo.InstalledUICulture.Name;
-            var v1 = System.Globalization.CultureInfo.CurrentCulture.EnglishName;
+            YoudaoFanyi youdaoFanyi = new YoudaoFanyi();
+            var v = youdaoFanyi.Fanyi("你好", "auto", "en", LanguageEnum.简体中文, LanguageEnum.English).Result;
             Assert.True(true);
         }
     }
