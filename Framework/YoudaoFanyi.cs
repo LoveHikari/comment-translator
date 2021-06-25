@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Framework
@@ -68,7 +65,7 @@ namespace Framework
                 string html = System.Text.Encoding.UTF8.GetString(bytes);
                 var jo = Newtonsoft.Json.Linq.JObject.Parse(html);
                 var jr = Newtonsoft.Json.Linq.JArray.Parse(jo["translateResult"].ToString());
-                r = JObject.Parse(jr[0][0].ToString())["src"].ToString();
+                r = JObject.Parse(jr[0][0].ToString())["tgt"].ToString();
             }
 
             var apiResp = new ApiResponse()

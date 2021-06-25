@@ -18,7 +18,7 @@ namespace Framework
             var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
             HttpResponseMessage response = await client.SendAsync(request);
             string html = await response.Content.ReadAsStringAsync();
-            Regex regex = new Regex("params_RichTranslateHelper = \\[(.+?),\"(.+?)\",3600000,true\\]");
+            Regex regex = new Regex("params_RichTranslateHelper = \\[(.+?),\"(.+?)\",.+?");
             var match = regex.Match(html);
             string token = match.Groups[2].Value;
             string key = match.Groups[1].Value;
