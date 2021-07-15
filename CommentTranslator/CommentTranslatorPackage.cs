@@ -31,7 +31,7 @@ namespace CommentTranslator
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", "1.0.2", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(CommentTranslatorPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionPageGrid), "CommentTranslator64", "General", 0, 0, true)]
