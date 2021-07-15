@@ -19,8 +19,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.csproj" />
-  </ItemGroup>
-
 </Project>
