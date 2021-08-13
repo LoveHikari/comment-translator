@@ -9,7 +9,7 @@ namespace TestProject1
         [Fact]
         public void Test1()
         {
-            YoudaoFanyi youdaoFanyi = new YoudaoFanyi();
+            GoogleFanyi youdaoFanyi = new ();
             var v = youdaoFanyi.Fanyi("你好", "auto", "en", LanguageEnum.简体中文, LanguageEnum.English).Result;
             Assert.True(true);
         }

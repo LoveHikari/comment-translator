@@ -191,7 +191,7 @@ namespace CommentTranslator.Ardonment
                                         FlowDirection.LeftToRight,
                                         _typeface,
                                         _fontSize,
-                                        Brushes.Black);
+                                        Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
             }
             else
             {
@@ -201,7 +201,7 @@ namespace CommentTranslator.Ardonment
                                        FlowDirection.LeftToRight,
                                        new Typeface(_textBlock.FontFamily, _textBlock.FontStyle, _textBlock.FontWeight, _textBlock.FontStretch),
                                        _textBlock.FontSize,
-                                       Brushes.Black);
+                                       Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
             }
         }
 

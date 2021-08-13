@@ -12,6 +12,8 @@
 
 现进行修改已便使用。
 
+参考自[comment-translator-china](https://github.com/netcorevip/comment-translator-china)
+
 支持vs版本：Visual Studio 2022，其他版本均不支持。
 
 
@@ -82,5 +84,7 @@
 
 [Apache 2.0](LICENSE.txt)
 
+目前引用Newtonsoft.Json 13.0.x版本时，需要在vsixmanifest文件中添加Asset Type="Microsoft.VisualStudio.Assembly"
+而引用12.0.x时不需要，暂时不知道原因。
 
 

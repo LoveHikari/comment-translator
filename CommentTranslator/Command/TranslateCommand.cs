@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 
 namespace CommentTranslator.Command
@@ -142,7 +143,7 @@ namespace CommentTranslator.Command
         }
         private IWpfTextView GetWpfView()
         {
-            var textManager = (IVsTextManager)ServiceProvider.GetServiceAsync(typeof(SVsTextManager)).Result;
+            var textManager =  (IVsTextManager)ServiceProvider.GetServiceAsync(typeof(SVsTextManager)).GetAwaiter().GetResult();
             var componentModel = (IComponentModel)this.ServiceProvider.GetServiceAsync(typeof(SComponentModel)).Result;
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
 
