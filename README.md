@@ -14,7 +14,7 @@
 
 参考自[comment-translator-china](https://github.com/netcorevip/comment-translator-china)
 
-支持vs版本：Visual Studio 2022，其他版本均不支持。
+支持vs版本：Visual Studio 2019, 2022，其他版本均不支持。
 
 
 
