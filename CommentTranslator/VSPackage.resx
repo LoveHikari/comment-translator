@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="110" xml:space="preserve">
-    <value>Simple Annotation</value>
+    <value>CommentTranslator64</value>
     <comment>关于页-标题</comment>
   </data>
   <data name="112" xml:space="preserve">
-    <value>To add annotation easily...</value>
+    <value>Extension of visual studio that automatic translate comment in you open file</value>
     <comment>关于页-说明</comment>
   </data>
 </root>

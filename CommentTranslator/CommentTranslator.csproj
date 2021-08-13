@@ -126,7 +126,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CommentTranslatorPackage.resx">
+    <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>CommentTranslatorPackage</ManifestResourceName>
       <SubType>Designer</SubType>
