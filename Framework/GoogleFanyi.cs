@@ -28,7 +28,7 @@ namespace Framework
                 var jo = Newtonsoft.Json.Linq.JArray.Parse(html);
                 jo = Newtonsoft.Json.Linq.JArray.Parse(jo[0][2].ToString());
 
-                r = jo[1][0][0][5][0][0].ToString(); ;
+                r = jo[1][0][0][5][0][0].ToString();
             }
 
             var apiResp = new ApiResponse()

@@ -14,7 +14,7 @@ namespace Framework
     {
         public async Task<ApiResponse> Execute(ApiRequest apiRequest)
         {
-            apiRequest.Body = apiRequest.Body.Replace("\r\n", @"\\n");
+            apiRequest.Body = apiRequest.Body.Replace("\r\n", "\n");
             apiRequest.Body = HumpUnfold(apiRequest.Body);
             string fromLanguage = LanguageTransform(apiRequest.TranslateServer, apiRequest.FromLanguage);
             string toLanguage = LanguageTransform(apiRequest.TranslateServer, apiRequest.ToLanguage);
@@ -46,21 +46,31 @@ namespace Framework
         /// <returns></returns>
         private String HumpUnfold(String humpString)
         {
-            Regex regex = new Regex("([A-Z]|^)[a-z]+");
-            var matcher = regex.Matches(humpString);
-            if (matcher.Count > 0)
+            string[] ss = humpString.Split(' ');
+            string res = "";
+            foreach (var s in ss)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (Match match in matcher)
+                Regex regex = new Regex("([A-Z]|^)[a-z]+");
+                var matcher = regex.Matches(s);
+                if (matcher.Count > 0)
                 {
-                    string g = match.Groups[0].Value;
-                    sb.Append(g + " ");
-                }
+                    StringBuilder sb = new StringBuilder();
+                    foreach (Match match in matcher)
+                    {
+                        string g = match.Groups[0].Value;
+                        sb.Append(g + " ");
+                    }
 
-                return sb.ToString().TrimEnd();
+                    res += sb.ToString().TrimEnd() + " ";
+                    //return sb.ToString().TrimEnd();
+                }
+                else
+                {
+                    res += s + " ";
+                }
             }
 
-            return humpString;
+            return res;
         }
 
         private string LanguageTransform(TranslateServerEnum translateServer, LanguageEnum language)
