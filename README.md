@@ -20,7 +20,7 @@
 
 ### 初始化设置
 
-需要设置谷歌TKK值才能使用翻译功能，下一步骤自动设置
+~~需要设置谷歌TKK值才能使用翻译功能，~~下一步骤自动设置
 
 [![设置](Images/Options.png)
 
@@ -86,5 +86,4 @@
 
 目前引用Newtonsoft.Json 13.0.x版本时，需要在vsixmanifest文件中添加Asset Type="Microsoft.VisualStudio.Assembly"
 而引用12.0.x时不需要，暂时不知道原因。
-
 
