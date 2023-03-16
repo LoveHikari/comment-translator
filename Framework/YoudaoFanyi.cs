@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Framework
@@ -11,6 +12,7 @@ namespace Framework
     /// <summary>
     /// 有道翻译
     /// </summary>
+    /// <remarks>https://www.cnblogs.com/wxd501/p/17070184.html</remarks>
     public class YoudaoFanyi
     {
         // https://www.cnblogs.com/lingdurebing/p/ldrb-java-spider.html
@@ -26,43 +28,40 @@ namespace Framework
         }
         public async Task<ApiResponse> Fanyi(string body, string from, string to, LanguageEnum fromLanguage, LanguageEnum toLanguage)
         {
-            string ua = " Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0";
-            var request = new HttpRequestMessage(HttpMethod.Get, new Uri("https://fanyi.youdao.com"));
-            request.Headers.Add("User-Agent", ua);
-            request.Headers.Add("Referer", "http://fanyi.youdao.com/");
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
-
-            string url = "https://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule";
-
-            string r = "";
-            request = new HttpRequestMessage(HttpMethod.Post, new Uri(url));
-            var v = GetSign(body);
-            var bv = GetBv(ua);
+            var localtime = GetTimeStamp();
+            var signData = $"client=fanyideskweb&mysticTime={localtime}&product=webfanyi&key=fsdsogkndfokasodnaso";
+            var sign = System.BitConverter.ToString(MD5.Create().ComputeHash(System.Text.Encoding.GetEncoding("utf-8").GetBytes(signData))).Replace("-", "").ToLower();
             IDictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add("i", body);
             dic.Add("from", from);
             dic.Add("to", to);
-            dic.Add("smartresult", "dict");
+            dic.Add("dictResult", "true");
+            dic.Add("keyid", "webfanyi");
+            dic.Add("sign", sign);
             dic.Add("client", "fanyideskweb");
-            dic.Add("salt", v.salt);
-            dic.Add("sign", v.sign);
-            dic.Add("bv", bv);
-            dic.Add("lts", v.ts);
-            dic.Add("doctype", "json");
-            dic.Add("version", "2.1");
+            dic.Add("product", "webfanyi");
+            dic.Add("appVersion", "1.0.0");
+            dic.Add("vendor", "web");
+            dic.Add("pointParam", "client,mysticTime,product");
+            dic.Add("mysticTime", localtime);
             dic.Add("keyfrom", "fanyi.web");
-            dic.Add("action", "FY_BY_REALTlME");
             var data = new FormUrlEncodedContent(dic);
+
+            string ua = " Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0";
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://dict.youdao.com/webtranslate"));
+
             request.Content = data;
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
             request.Headers.Add("User-Agent", ua);
             request.Headers.Add("Referer", "http://fanyi.youdao.com/");
-            response = await _httpClient.SendAsync(request);
-
+            request.Headers.Add("Cookie", "OUTFOX_SEARCH_USER_ID=-2094880112@10.108.162.135; OUTFOX_SEARCH_USER_ID_NCOO=86107500.53660281");
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            string r = "";
             if (response.IsSuccessStatusCode)
             {
                 var bytes = await response.Content.ReadAsByteArrayAsync();
                 string html = System.Text.Encoding.UTF8.GetString(bytes);
+                html = DecryptedText(html);
                 var jo = Newtonsoft.Json.Linq.JObject.Parse(html);
                 var jr = Newtonsoft.Json.Linq.JArray.Parse(jo["translateResult"].ToString());
                 r = JObject.Parse(jr[0][0].ToString())["tgt"].ToString();
@@ -81,17 +80,28 @@ namespace Framework
             return apiResp;
         }
 
-        private (string ts, string salt, string sign) GetSign(string word)
+        private string DecryptedText(string text)
         {
-            var ts = GetTimeStamp();
-            var salt = ts + new Random().Next(10);
-            var sign = GetMd5("fanyideskweb" + word + salt + "n%A-rKaT5fb[Gy?;N5@Tj");
-            return (ts, salt, sign);
-        }
+            string o = "ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl";
+            string n = "ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4";
+            var a = MD5.Create().ComputeHash(System.Text.Encoding.GetEncoding("utf-8").GetBytes(o));
+            var r = MD5.Create().ComputeHash(System.Text.Encoding.GetEncoding("utf-8").GetBytes(n));
 
-        private String GetBv(String UserAgent)
-        {
-            return GetMd5(UserAgent);
+            text = text.Replace("-", "+").Replace("_", "/");
+
+            Aes aes = Aes.Create();
+            aes.KeySize = 128;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Key = a;
+            aes.IV = r;
+
+            ICryptoTransform decryptor = aes.CreateDecryptor();
+            byte[] encryptedBytes = Convert.FromBase64String(text);
+            byte[] decryptedBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+
+            string decryptedText = Encoding.UTF8.GetString(decryptedBytes);
+            return decryptedText;
         }
 
         /// <summary>
@@ -102,19 +112,6 @@ namespace Framework
         {
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalMilliseconds).ToString();
-        }
-        /// <summary>
-        /// 加密
-        /// </summary>
-        /// <param name="data">要加密的数据</param>
-        /// <returns>密文</returns>
-        private string GetMd5(string data)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] t = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(data));
-            string t2 = BitConverter.ToString(t);
-            t2 = t2.Replace("-", "").ToLower();
-            return t2;
         }
     }
 }

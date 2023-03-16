@@ -18,12 +18,15 @@ namespace Framework
             var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
             HttpResponseMessage response = await client.SendAsync(request);
             string html = await response.Content.ReadAsStringAsync();
-            Regex regex = new Regex("params_RichTranslateHelper = \\[(.+?),\"(.+?)\",.+?");
+            Regex regex = new Regex("params_AbusePreventionHelper = \\[(.+?),\"(.+?)\",.+?");
             var match = regex.Match(html);
             string token = match.Groups[2].Value;
             string key = match.Groups[1].Value;
+            regex = new Regex("\"ig\":\"(.+?)\",");
+            match = regex.Match(html);
+            string ig = match.Groups[1].Value;
 
-            url = "https://cn.bing.com/ttranslatev3";
+            url = $"https://cn.bing.com/ttranslatev3?IG={ig}&IID=translator.5028";
             request = new HttpRequestMessage(HttpMethod.Post, new Uri(url));
             IDictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add("fromLang", from);
