@@ -20,7 +20,7 @@ namespace TestProject1
                             The minimum requirement for a class to be considered a valid package for Visual Studio",
                 FromLanguage = LanguageEnum.Auto,
                 ToLanguage = LanguageEnum.简体中文,
-                TranslateServer = TranslateServerEnum.Google
+                TranslateServer = TranslateServerEnum.有道
             };
             var v = apiClient.Execute(apiRequest).Result;
 
