@@ -4,11 +4,18 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TestProject1
 {
     public class UnitTest1
     {
+        private ITestOutputHelper _output;
+
+        public UnitTest1(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         [Fact]
         public void Test1()
         {
@@ -20,7 +27,7 @@ namespace TestProject1
                             The minimum requirement for a class to be considered a valid package for Visual Studio",
                 FromLanguage = LanguageEnum.Auto,
                 ToLanguage = LanguageEnum.简体中文,
-                TranslateServer = TranslateServerEnum.有道
+                TranslateServer = TranslateServerEnum.Google
             };
             var v = apiClient.Execute(apiRequest).Result;
 
