@@ -65,14 +65,14 @@
 				<Parent guid="guidCommentTranslatorPackageCmdSet" id="MyMenuGroup" />
 				<Icon guid="guidImages" id="bmpPic1" />
 				<Strings>
-					<ButtonText>translate</ButtonText>
+					<ButtonText>翻译</ButtonText>
 				</Strings>
 			</Button>
 			<Button guid="guidCommentTranslatorPackageCmdSet" id="ToggleAutoTranslatorId" priority="0x0100" type="Button">
 				<Parent guid="guidCommentTranslatorPackageCmdSet" id="MyMenuGroup" />
 				<Icon guid="guidImages" id="bmpPic1" />
 				<Strings>
-					<ButtonText>auto translate</ButtonText>
+					<ButtonText>切换自动翻译</ButtonText>
 				</Strings>
 			</Button>
 		  <!--<Button guid="guidCommentTranslatorPackageCmdSet" id="cmdidToggleAutoTranslateCommand" priority="0x0100" type="Button">

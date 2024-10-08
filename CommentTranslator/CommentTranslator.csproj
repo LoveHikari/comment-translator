@@ -87,12 +87,15 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommentTranslatorPackage.cs" />
+    <Compile Include="Resources\lang\Resource.Designer.cs" />
     <Compile Include="Support\IntraTextAdornmentTagger.cs" />
     <Compile Include="Support\RegexMultiLineTagger.cs" />
     <Compile Include="Support\RegexTagger.cs" />
     <Compile Include="Util\CommentParserHelper.cs" />
     <Compile Include="Util\CommentTagHelper.cs" />
     <Compile Include="Util\EditFormatMapHelper.cs" />
+    <Compile Include="Util\LocalizedDescriptionAttribute.cs" />
+    <Compile Include="Util\LocalizedDisplayNameAttribute.cs" />
     <Compile Include="Util\Settings.cs" />
     <Compile Include="Util\VsOutputLogger.cs" />
   </ItemGroup>
@@ -126,6 +129,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\lang\Resource.resx" />
+    <EmbeddedResource Include="Resources\lang\Resource.zh-CN.resx" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>CommentTranslatorPackage</ManifestResourceName>
@@ -144,6 +149,9 @@
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="CommentTranslatorPackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+    <VSCTCompile Include="CommentTranslatorPackage.zh-CN.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
