@@ -44,12 +44,14 @@ namespace CommentTranslator
         public const string PackageGuidString = "15fe96fc-8fd3-4e06-b322-deba11e09dfc";
 
         public static Settings Settings { get; set; } = new Settings();
-        public static TranslateClient TranslateClient { get; set; }
+
+        public static TranslateClient TranslateClient { get; set; } = new TranslateClient(Settings);
 
         //public DTE2 DTE { get; set; }
         //public Events Events { get; set; }
         //public DocumentEvents DocumentEvents { get; set; }
         //public WindowEvents WindowEvents { get; set; }
+
 
         #region Package Members
 

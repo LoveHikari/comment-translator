@@ -8,6 +8,14 @@ namespace CommentTranslator.Util
     /// </summary>
     public class Settings
     {
+        public Settings()
+        {
+            this.TranslateServer = TranslateServerEnum.Bing;
+            this.TranslateFrom = LanguageEnum.Auto;
+            this.TranslatetTo = GetCurrentCulture();
+            this.AutoTranslateComment = false;
+            this.AutoTextCopy = false;
+        }
         /// <summary>
         /// 翻译服务器
         /// </summary>
@@ -40,6 +48,27 @@ namespace CommentTranslator.Util
             this.TranslatetTo = page.TranslatetTo;
             this.AutoTranslateComment = page.AutoTranslateComment;
             this.AutoTextCopy = page.AutoTextCopy;
+        }
+        /// <summary>
+        /// 获得当前语言
+        /// </summary>
+        /// <returns></returns>
+        private static LanguageEnum GetCurrentCulture()
+        {
+            string currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+            switch (currentCulture)
+            {
+                case "ja-JP":
+                    return LanguageEnum.日本語;
+                case "zh-CN":
+                    return LanguageEnum.简体中文;
+                case "zh-TW":
+                    return LanguageEnum.繁體中文;
+                case "en-US":
+                    return LanguageEnum.English;
+                default:
+                    return LanguageEnum.简体中文;
+            }
         }
     }
 }

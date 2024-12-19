@@ -14,29 +14,33 @@ namespace Framework
     {
         public async Task<ApiResponse> Execute(ApiRequest apiRequest)
         {
-            apiRequest.Body = apiRequest.Body.Replace("\r\n", "\n");
-            apiRequest.Body = HumpUnfold(apiRequest.Body);
+            var body = apiRequest.Body.Replace("\r\n", "\n");
+            body = HumpUnfold(body);
             string fromLanguage = LanguageTransform(apiRequest.TranslateServer, apiRequest.FromLanguage);
             string toLanguage = LanguageTransform(apiRequest.TranslateServer, apiRequest.ToLanguage);
-
+            ApiResponse res = new ApiResponse();
+            res.SourceText = apiRequest.Body;
             switch (apiRequest.TranslateServer)
             {
                 case TranslateServerEnum.Google:
                     GoogleFanyi googleFanyi = new GoogleFanyi();
-                    return await googleFanyi.Fanyi(apiRequest.Body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    res = await googleFanyi.Fanyi(body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    break;
                 case TranslateServerEnum.Bing:
                     BingFanyi bingFanyi = new BingFanyi();
-                    return await bingFanyi.Fanyi(apiRequest.Body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    res = await bingFanyi.Fanyi(body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    break;
                 case TranslateServerEnum.百度:
                     break;
                 case TranslateServerEnum.有道:
                     YoudaoFanyi youdaoFanyi = new YoudaoFanyi();
-                    return await youdaoFanyi.Fanyi(apiRequest.Body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    res = await youdaoFanyi.Fanyi(body, fromLanguage, toLanguage, apiRequest.FromLanguage, apiRequest.ToLanguage);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return null;
+            return res;
         }
 
         /// <summary>

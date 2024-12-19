@@ -4,7 +4,14 @@ namespace Framework
 {
     public class ApiResponse
     {
-        public string Data { get; set; }
+        /// <summary>
+        /// 待翻译文件
+        /// </summary>
+        public string SourceText { get; set; }
+        /// <summary>
+        /// 翻译后的文本
+        /// </summary>
+        public string TargetText { get; set; }
         /// <summary>
         /// 请求语言
         /// </summary>
@@ -16,7 +23,7 @@ namespace Framework
         /// <summary>
         /// 翻译是否成功
         /// </summary>
-        public bool TranslateSuccess { get; set; }
+        public bool Success { get; set; }
 
         public int Code { get; set; }
         public string Message { get; set; }

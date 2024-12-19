@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommentTranslator22.Popups.QuickInfo.Comment;
+using CommentTranslator.QuickInfo.comment;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
-using Microsoft.VisualStudio.Text.Operations;
 
-namespace QuickInfoTest
+namespace CommentTranslator.QuickInfo
 {
     internal class TestQuickInfoSource : IAsyncQuickInfoSource
     {
@@ -37,8 +36,7 @@ namespace QuickInfoTest
                 m_isDisposed = true;
             }
         }
-
-        //public async Task<QuickInfoItem> GetQuickInfoItemAsync(IQuickInfoSession session, IList<object> quickInfoContent, out ITrackingSpan applicableToSpan)
+        
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
             // Map the trigger point down to our buffer.
@@ -61,9 +59,10 @@ namespace QuickInfoTest
 
             var applicableToSpan = currentSnapshot.CreateTrackingSpan(querySpan, SpanTrackingMode.EdgeInclusive);
             var element = new ContainerElement(ContainerElementStyle.Stacked);
+            
 
             var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
-            if (temp != null && temp.Any() == true)
+            if (temp != null && temp.Any())
             {
                 var e = element.Elements.Append(new ClassifiedTextElement(temp));
                 element = new ContainerElement(ContainerElementStyle.Stacked, e);

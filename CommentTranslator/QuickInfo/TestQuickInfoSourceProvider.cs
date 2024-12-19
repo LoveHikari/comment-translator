@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 
-namespace QuickInfoTest
+namespace CommentTranslator.QuickInfo
 {
     [Export(typeof(IAsyncQuickInfoSourceProvider))]
     [Name("ToolTip QuickInfo Source")]

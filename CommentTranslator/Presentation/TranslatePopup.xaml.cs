@@ -73,12 +73,12 @@ namespace CommentTranslator.Presentation
                             {
                                 //弹窗提示
                                 tblDirection.Text = $"{data.Result.FromLanguage.ToLower()} -> {data.Result.ToLanguage.ToString().ToLower()}";
-                                tblTranslatedText.Text = data.Result.Data;
+                                tblTranslatedText.Text = data.Result.TargetText;
                                 bdTranslatedText.Visibility = Visibility.Visible;
 
                                 if (CommentTranslatorPackage.Settings.AutoTextCopy) //包初始化的时候赋值
                                 {
-                                    Clipboard.SetText(data.Result.Data);
+                                    Clipboard.SetText(data.Result.TargetText);
                                 }
                             }
                             else

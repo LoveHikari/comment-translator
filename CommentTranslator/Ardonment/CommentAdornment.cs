@@ -281,11 +281,11 @@ namespace CommentTranslator.Ardonment
                         //Call translate complete
                         if (!data.IsFaulted)
                         {
-                            TranslateComplete(new TranslatedComment(comment, data.Result.Data), null);
+                            TranslateComplete(new TranslatedComment(comment, data.Result.TargetText), null);
                         }
                         else
                         {
-                            TranslateComplete(new TranslatedComment(comment, data.Result.Data), data.Exception);
+                            TranslateComplete(new TranslatedComment(comment, data.Result.TargetText), data.Exception);
                         }
                     }, TaskScheduler.FromCurrentSynchronizationContext());
             }

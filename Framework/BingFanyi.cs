@@ -52,10 +52,10 @@ namespace Framework
             {
                 Code = (int)response.StatusCode,
                 Message = response.StatusCode.ToString(),
-                Data = r,
+                TargetText = r,
                 FromLanguage = fromLanguage.ToString(),
                 ToLanguage = toLanguage.ToString(),
-                TranslateSuccess = true
+                Success = true
             };
 
             return apiResp;
