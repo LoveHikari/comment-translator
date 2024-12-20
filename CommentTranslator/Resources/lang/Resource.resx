@@ -147,4 +147,11 @@
   <data name="AutoTextCopy_Description" xml:space="preserve">
     <value>Whether to automatically copy the content to the clipboard when translating manually.</value>
   </data>
+  <data name="AutoTranslateQuickInfo_DisplayName" xml:space="preserve">
+    <value>Translate Quick Info Text</value>
+    <comment>翻译快速信息文本</comment>
+  </data>
+  <data name="AutoTranslateQuickInfo_Description" xml:space="preserve">
+    <value>When the mouse points to the text of a function, method, variable, class, enumeration, etc., some quick information text in the translation pop-up</value>
+  </data>
 </root>

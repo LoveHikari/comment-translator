@@ -39,7 +39,9 @@ namespace CommentTranslator.Presentation
         //[DisplayName("自动检测类型")]
         //[Description("自动检测待翻译语言类型")]
         //public bool AutoDetect { get; set; } = false;
-
+        /// <summary>
+        /// 打开文件自动翻译
+        /// </summary>
         [Category("Translate")]
         [LocalizedDisplayName("AutoTranslateComment_DisplayName", typeof(Resource))]
         [LocalizedDescription("AutoTranslateComment_Description", typeof(Resource))]
@@ -49,7 +51,13 @@ namespace CommentTranslator.Presentation
         [LocalizedDisplayName("AutoTextCopy_DisplayName", typeof(Resource))]
         [LocalizedDescription("AutoTextCopy_Description", typeof(Resource))]
         public bool AutoTextCopy { get; set; } = false;
-
+        /// <summary>
+        /// 翻译快速信息文本
+        /// </summary>
+        [Category("Translate")]
+        [LocalizedDisplayName("AutoTranslateQuickInfo_DisplayName", typeof(Resource))]
+        [LocalizedDescription("AutoTranslateQuickInfo_Description", typeof(Resource))]
+        public bool AutoTranslateQuickInfo { get; set; } = true;
         protected override void OnApply(PageApplyEventArgs e)
         {
             base.OnApply(e);

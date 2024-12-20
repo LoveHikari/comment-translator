@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CommentTranslator.Presentation;
 using CommentTranslator.QuickInfo.comment;
+using CommentTranslator.Util;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 
@@ -16,6 +19,7 @@ namespace CommentTranslator.QuickInfo
         private ITextBuffer m_subjectBuffer;
         private Dictionary<string, string> m_dictionary;
         private bool m_isDisposed;
+
         internal TestQuickInfoSource(TestQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
         {
             m_provider = provider;
@@ -27,6 +31,7 @@ namespace CommentTranslator.QuickInfo
             m_dictionary.Add("subtract", "int subtract(int firstInt, int secondInt)\nSubtracts one integer from another.");
             m_dictionary.Add("multiply", "int multiply(int firstInt, int secondInt)\nMultiplies one integer by another.");
             m_dictionary.Add("divide", "int divide(int firstInt, int secondInt)\nDivides one integer by another.");
+
         }
         public void Dispose()
         {
@@ -59,13 +64,15 @@ namespace CommentTranslator.QuickInfo
 
             var applicableToSpan = currentSnapshot.CreateTrackingSpan(querySpan, SpanTrackingMode.EdgeInclusive);
             var element = new ContainerElement(ContainerElementStyle.Stacked);
-            
 
-            var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
-            if (temp != null && temp.Any())
+            if (CommentTranslatorPackage.Settings.AutoTranslateQuickInfo)
             {
-                var e = element.Elements.Append(new ClassifiedTextElement(temp));
-                element = new ContainerElement(ContainerElementStyle.Stacked, e);
+                var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
+                if (temp != null && temp.Any())
+                {
+                    var e = element.Elements.Append(new ClassifiedTextElement(temp));
+                    element = new ContainerElement(ContainerElementStyle.Stacked, e);
+                }
             }
 
             return new QuickInfoItem(applicableToSpan, element);

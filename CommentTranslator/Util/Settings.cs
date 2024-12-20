@@ -15,6 +15,7 @@ namespace CommentTranslator.Util
             this.TranslatetTo = GetCurrentCulture();
             this.AutoTranslateComment = false;
             this.AutoTextCopy = false;
+            this.AutoTranslateQuickInfo = true;
         }
         /// <summary>
         /// 翻译服务器
@@ -38,6 +39,10 @@ namespace CommentTranslator.Util
         /// </summary>
         public bool AutoTextCopy { get; set; }
         /// <summary>
+        /// 翻译快速信息文本
+        /// </summary>
+        public bool AutoTranslateQuickInfo { get; set; }
+        /// <summary>
         /// 刷新设置的值
         /// </summary>
         /// <param name="page"></param>
@@ -48,6 +53,7 @@ namespace CommentTranslator.Util
             this.TranslatetTo = page.TranslatetTo;
             this.AutoTranslateComment = page.AutoTranslateComment;
             this.AutoTextCopy = page.AutoTextCopy;
+            this.AutoTranslateQuickInfo = page.AutoTranslateQuickInfo;
         }
         /// <summary>
         /// 获得当前语言

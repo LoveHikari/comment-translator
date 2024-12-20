@@ -147,4 +147,10 @@
   <data name="AutoTextCopy_Description" xml:space="preserve">
     <value>手动翻译时是否自动复制内容到剪切板。</value>
   </data>
+  <data name="AutoTranslateQuickInfo_DisplayName" xml:space="preserve">
+    <value>翻译快速信息文本</value>
+  </data>
+  <data name="AutoTranslateQuickInfo_Description" xml:space="preserve">
+    <value>鼠标指向函数、方法、变量、类、枚举等文本时，翻译弹出时的部分快速信息文本</value>
+  </data>
 </root>

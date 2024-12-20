@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
@@ -17,6 +18,7 @@ namespace CommentTranslator.QuickInfo
 
         [Import]
         internal ITextBufferFactoryService TextBufferFactoryService { get; set; }
+
         public IAsyncQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
         {
             return new TestQuickInfoSource(this, textBuffer);

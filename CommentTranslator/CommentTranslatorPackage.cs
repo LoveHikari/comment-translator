@@ -9,6 +9,7 @@ using CommentTranslator.Presentation;
 using CommentTranslator.Util;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace CommentTranslator
