@@ -67,12 +67,20 @@ namespace CommentTranslator.QuickInfo
 
             if (CommentTranslatorPackage.Settings.AutoTranslateQuickInfo)
             {
-                var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
-                if (temp != null && temp.Any())
+                try
                 {
-                    var e = element.Elements.Append(new ClassifiedTextElement(temp));
-                    element = new ContainerElement(ContainerElementStyle.Stacked, e);
+                    var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
+                    if (temp != null && temp.Any())
+                    {
+                        var e = element.Elements.Append(new ClassifiedTextElement(temp));
+                        element = new ContainerElement(ContainerElementStyle.Stacked, e);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    
+                }
+                
             }
 
             return new QuickInfoItem(applicableToSpan, element);
