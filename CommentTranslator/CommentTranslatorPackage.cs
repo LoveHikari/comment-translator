@@ -78,6 +78,9 @@ namespace CommentTranslator
             // 创建连接返回翻译内容
             TranslateClient = new TranslateClient(Settings);
 
+            SignatureHelp.SignatureHelpDiagnostics.Initialize(this);
+            SignatureHelp.SignatureHelpDiagnostics.Log("CommentTranslatorPackage initialized");
+
             //DTE = (DTE2)GetService(typeof(DTE));
             //Events = DTE.Events;
             //DocumentEvents = Events.DocumentEvents;
@@ -106,4 +109,4 @@ namespace CommentTranslator
 
         #endregion
     }
-}
+

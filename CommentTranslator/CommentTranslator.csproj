@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
@@ -87,6 +87,26 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommentTranslatorPackage.cs" />
+    <Compile Include="IntelliSense\AdornmentPlainTextExtractor.cs" />
+    <Compile Include="IntelliSense\CompletionDisplayTextHelper.cs" />
+    <Compile Include="IntelliSense\CompletionItemTranslationSource.cs" />
+    <Compile Include="IntelliSense\IntelliSenseTranslationHelper.cs" />
+    <Compile Include="IntelliSense\TranslatingCompletionItemManager.cs" />
+    <Compile Include="IntelliSense\TranslatingCompletionItemManagerProvider.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpDocTranslationAdornment.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpDocTranslationConnector.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpDocTranslationController.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpDiagnostics.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpDocumentationPrefetchSource.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpTranslationComposer.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpTranslationParts.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpSessionHelper.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpSessionTranslationHost.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpVisualFinder.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpEditorSessionMonitor.cs" />
+    <Compile Include="SignatureHelp\SignatureHelpViewElementFactory.cs" />
+    <Compile Include="QuickInfo\QuickInfoDocumentationExtractor.cs" />
+    <Compile Include="QuickInfo\QuickInfoSessionTranslationGuard.cs" />
     <Compile Include="QuickInfo\comment\CommentTranslate.cs" />
     <Compile Include="QuickInfo\TestQuickInfoController.cs" />
     <Compile Include="QuickInfo\TestQuickInfoControllerProvider.cs" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -153,5 +153,23 @@
   </data>
   <data name="AutoTranslateQuickInfo_Description" xml:space="preserve">
     <value>When the mouse points to the text of a function, method, variable, class, enumeration, etc., some quick information text in the translation pop-up</value>
+  </data>
+  <data name="AutoTranslateCompletion_DisplayName" xml:space="preserve">
+    <value>Translate IntelliSense completion tooltips</value>
+  </data>
+  <data name="AutoTranslateCompletion_Description" xml:space="preserve">
+    <value>When browsing the completion list, append a translated description (e.g. XML doc summary) next to the original tooltip text.</value>
+  </data>
+  <data name="AutoTranslateSignatureHelp_DisplayName" xml:space="preserve">
+    <value>Translate Signature Help</value>
+  </data>
+  <data name="AutoTranslateSignatureHelp_Description" xml:space="preserve">
+    <value>When Signature Help is shown (e.g. after typing opening parenthesis), translate method and parameter documentation; the signature line is left unchanged so parameter highlighting stays correct.</value>
+  </data>
+  <data name="AutoTranslateCompletionDisplay_DisplayName" xml:space="preserve">
+    <value>Translate completion list display text</value>
+  </data>
+  <data name="AutoTranslateCompletionDisplay_Description" xml:space="preserve">
+    <value>When enabled, translate descriptive completion item display text in the list (not symbol names or insert text). Each session is limited to 20 items for performance.</value>
   </data>
 </root>

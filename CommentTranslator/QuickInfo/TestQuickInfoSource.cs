@@ -1,50 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CommentTranslator.Presentation;
 using CommentTranslator.QuickInfo.comment;
-using CommentTranslator.Util;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
+using Microsoft.VisualStudio.Utilities;
 
 namespace CommentTranslator.QuickInfo
 {
     internal class TestQuickInfoSource : IAsyncQuickInfoSource
     {
-        private TestQuickInfoSourceProvider m_provider;
-        private ITextBuffer m_subjectBuffer;
-        private Dictionary<string, string> m_dictionary;
+        private readonly ITextBuffer m_subjectBuffer;
+        private readonly IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> m_peerProviders;
         private bool m_isDisposed;
 
-        internal TestQuickInfoSource(TestQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
+        internal TestQuickInfoSource(
+            ITextBuffer subjectBuffer,
+            IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> peerProviders)
         {
-            m_provider = provider;
             m_subjectBuffer = subjectBuffer;
-
-            //these are the method names and their descriptions
-            m_dictionary = new Dictionary<string, string>();
-            m_dictionary.Add("add", "int add(int firstInt, int secondInt)\nAdds one integer to another.");
-            m_dictionary.Add("subtract", "int subtract(int firstInt, int secondInt)\nSubtracts one integer from another.");
-            m_dictionary.Add("multiply", "int multiply(int firstInt, int secondInt)\nMultiplies one integer by another.");
-            m_dictionary.Add("divide", "int divide(int firstInt, int secondInt)\nDivides one integer by another.");
-
+            m_peerProviders = peerProviders ?? Enumerable.Empty<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>>();
         }
+
         public void Dispose()
         {
             if (!m_isDisposed)
             {
-                GC.SuppressFinalize(this);
                 m_isDisposed = true;
             }
         }
-        
+
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
-            // Map the trigger point down to our buffer.
             SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(m_subjectBuffer.CurrentSnapshot);
             if (!subjectTriggerPoint.HasValue)
             {
@@ -54,72 +46,63 @@ namespace CommentTranslator.QuickInfo
             ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
             SnapshotSpan querySpan = new SnapshotSpan(subjectTriggerPoint.Value, 0);
             var typeName = m_subjectBuffer.ContentType.TypeName;
-            //look for occurrences of our QuickInfo words in the span
-            // 使用 navigator.GetExtentOfWord 获取 XML、XAML 中的字符时会导致 VS 卡死
-            //ITextStructureNavigator navigator = m_provider.NavigatorService.GetTextStructureNavigator(m_subjectBuffer);
-            //TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
-            //string searchText = extent.Span.GetText();
-            var snapshotPoint = subjectTriggerPoint.Value;
-            var word = GetWord(snapshotPoint.Snapshot.GetText(), snapshotPoint.Position);
-
             var applicableToSpan = currentSnapshot.CreateTrackingSpan(querySpan, SpanTrackingMode.EdgeInclusive);
-            var element = new ContainerElement(ContainerElementStyle.Stacked);
 
-            if (CommentTranslatorPackage.Settings.AutoTranslateQuickInfo)
+            if (ShouldTranslate(m_subjectBuffer))
             {
+                if (QuickInfoDocumentationExtractor.SessionAlreadyHasTranslation(session))
+                {
+                    return null;
+                }
+
+                if (!QuickInfoSessionTranslationGuard.TryClaimSourceBuffer(session, m_subjectBuffer))
+                {
+                    return null;
+                }
+
                 try
                 {
-                    var temp = await CommentTranslate.TryTranslateMethodInformationAsync(session, typeName);
-                    if (temp != null && temp.Any())
+                    var temp = await CommentTranslate.TryTranslateMethodInformationAsync(
+                        session,
+                        typeName,
+                        m_subjectBuffer,
+                        m_peerProviders,
+                        cancellationToken);
+                    if (temp != null && temp.Any()
+                        && QuickInfoSessionTranslationGuard.TryCompleteContribution(session, m_subjectBuffer))
                     {
-                        var e = element.Elements.Append(new ClassifiedTextElement(temp));
-                        element = new ContainerElement(ContainerElementStyle.Stacked, e);
+                        var element = new ContainerElement(
+                            ContainerElementStyle.Stacked,
+                            new ClassifiedTextElement(temp));
+                        return new QuickInfoItem(applicableToSpan, element);
                     }
                 }
-                catch (Exception ex)
+                catch (OperationCanceledException)
                 {
-                    
+                    throw;
                 }
-                
+                catch
+                {
+                    // 翻译失败时不影响原有 Quick Info 展示。
+                }
             }
 
-            return new QuickInfoItem(applicableToSpan, element);
+            return null;
         }
 
-        private string GetWord(string text, int position)
+        /// <summary>
+        /// 由 <see cref="Settings.AutoTranslateQuickInfo"/> 控制（签名帮助文档由 adornment 层单独处理）。
+        /// </summary>
+        private static bool ShouldTranslate(ITextBuffer subjectBuffer)
         {
-            if (position < 0 || position >= text.Length)
+            var settings = CommentTranslatorPackage.Settings;
+            if (settings == null || CommentTranslatorPackage.TranslateClient == null)
             {
-                return null;
+                return false;
             }
 
-            // 获取单词边界
-            int strat = position, end = position;
-            while (strat >= 0)
-            {
-                if (char.IsWhiteSpace(text[strat]) || char.IsPunctuation(text[strat]) || char.IsSymbol(text[strat]))
-                {
-                    break;
-                }
-                strat--;
-            }
-            while (end < text.Length)
-            {
-                if (char.IsWhiteSpace(text[end]) || char.IsPunctuation(text[end]) || char.IsSymbol(text[end]))
-                {
-                    break;
-                }
-                end++;
-            }
-
-            if ((end > strat) == false)
-            {
-                return null;
-            }
-
-            // 返回单词
-            return text.Substring(strat + 1, end - strat - 1);
+            return settings.AutoTranslateQuickInfo
+                && QuickInfoSessionTranslationGuard.GetBufferPriority(subjectBuffer.ContentType?.TypeName) < 10;
         }
-
     }
 }

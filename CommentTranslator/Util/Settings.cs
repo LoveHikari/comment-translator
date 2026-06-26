@@ -1,4 +1,4 @@
-﻿using CommentTranslator.Presentation;
+using CommentTranslator.Presentation;
 using Framework;
 
 namespace CommentTranslator.Util
@@ -16,6 +16,9 @@ namespace CommentTranslator.Util
             this.AutoTranslateComment = false;
             this.AutoTextCopy = false;
             this.AutoTranslateQuickInfo = true;
+            this.AutoTranslateCompletion = true;
+            this.AutoTranslateSignatureHelp = true;
+            this.AutoTranslateCompletionDisplay = false;
         }
         /// <summary>
         /// 翻译服务器
@@ -43,6 +46,18 @@ namespace CommentTranslator.Util
         /// </summary>
         public bool AutoTranslateQuickInfo { get; set; }
         /// <summary>
+        /// 翻译 IntelliSense 补全列表中条目的说明（XML 文档/摘要等）
+        /// </summary>
+        public bool AutoTranslateCompletion { get; set; }
+        /// <summary>
+        /// 翻译签名帮助中的方法文档与参数说明（不改动签名行文本，以免破坏参数高亮）
+        /// </summary>
+        public bool AutoTranslateSignatureHelp { get; set; }
+        /// <summary>
+        /// 翻译补全列表中含描述性内容的 DisplayText（不改动 InsertText/FilterText/SortText；默认关闭）
+        /// </summary>
+        public bool AutoTranslateCompletionDisplay { get; set; }
+        /// <summary>
         /// 刷新设置的值
         /// </summary>
         /// <param name="page"></param>
@@ -54,6 +69,9 @@ namespace CommentTranslator.Util
             this.AutoTranslateComment = page.AutoTranslateComment;
             this.AutoTextCopy = page.AutoTextCopy;
             this.AutoTranslateQuickInfo = page.AutoTranslateQuickInfo;
+            this.AutoTranslateCompletion = page.AutoTranslateCompletion;
+            this.AutoTranslateSignatureHelp = page.AutoTranslateSignatureHelp;
+            this.AutoTranslateCompletionDisplay = page.AutoTranslateCompletionDisplay;
         }
         /// <summary>
         /// 获得当前语言

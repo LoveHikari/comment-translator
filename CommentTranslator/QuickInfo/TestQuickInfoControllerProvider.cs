@@ -9,7 +9,10 @@ namespace CommentTranslator.QuickInfo
 {
     [Export(typeof(IIntellisenseControllerProvider))]
     [Name("ToolTip QuickInfo Controller")]
-    [ContentType("text")]
+    [ContentType("CSharp")]
+    [ContentType("Basic")]
+    [ContentType("code")]
+    [ContentType("projection")]
     internal class TestQuickInfoControllerProvider : IIntellisenseControllerProvider
     {
         [Import]

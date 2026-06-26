@@ -1,176 +1,159 @@
-﻿using Framework;
+using System;
+using CommentTranslator.IntelliSense;
+using CommentTranslator.QuickInfo;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Adornments;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Utilities;
 
 namespace CommentTranslator.QuickInfo.comment
 {
     internal class CommentTranslate
     {
-        /// <summary>
-        /// 尝试翻译方法或变量的注释文本
-        /// </summary>
-        /// <param name="session"></param>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public static async Task<IEnumerable<ClassifiedTextRun>> TryTranslateMethodInformationAsync(IAsyncQuickInfoSession session, string typeName)
-        {
-            var str = TryGetMethodInformation(session, typeName);
-            if (str != null)
-            {
-                StringPretreatment(ref str);
-
-                var recv = await CommentTranslatorPackage.TranslateClient.TranslateAsync(str);
-
-                var temp = new List<ApiResponse> { recv };
-                CreateClassifiedTextRun(temp, out var runs);
-                return runs;
-
-            }
-            return null;
-        }
+        internal const string ProviderName = "ToolTip QuickInfo Source";
 
         /// <summary>
-        /// 尝试从 IAsyncQuickInfoSession 中获取鼠标指向的方法或变量的注解
+        /// 尝试翻译方法或变量的注释文本。
         /// </summary>
-        /// <param name="session"></param>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        private static string TryGetMethodInformation(IAsyncQuickInfoSession session, string typeName)
+        public static async Task<IEnumerable<ClassifiedTextRun>> TryTranslateMethodInformationAsync(
+            IAsyncQuickInfoSession session,
+            string typeName,
+            ITextBuffer subjectBuffer,
+            IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> otherProviders,
+            CancellationToken cancellationToken = default)
         {
-            if (session.Properties.PropertyList.Count > 0)
+            string str = await TryGetMethodInformationAsync(
+                    session,
+                    typeName,
+                    subjectBuffer,
+                    otherProviders,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            return await TryTranslateExtractedTextAsync(str, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 翻译已提取的纯文本文档（供 sighelp-doc 缓冲区等路径复用）。
+        /// </summary>
+        public static async Task<IEnumerable<ClassifiedTextRun>> TryTranslateExtractedTextAsync(
+            string str,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(str))
             {
-                // 这个 Value 的类型应该为 Microsoft.VisualStudio.Language.Intellisense.Implementation.LegacyQuickInfoSession
-                // 但是我还没有找到这个类型所在的命名空间，现在使用的是类型尝试转换，如果转换不成会返回 null
-                var quick = session.Properties.PropertyList[0].Value as IQuickInfoSession;
-                foreach (ContainerElement i in quick.QuickInfoContent.Cast<ContainerElement>())
-                {
-                    if (typeName == "C/C++")
-                    {
-                        return TryGetCppMethodInformation(i.Elements);
-                    }
-                    foreach (ContainerElement element in i.Elements.Cast<ContainerElement>())
-                    {
-                        if (element.Elements.Count() < 2)
-                        {
-                            return null;
-                        }
-                        if (element.Elements.ElementAt(0).GetType() == typeof(ContainerElement) &&
-                            element.Elements.ElementAt(1).GetType() == typeof(ClassifiedTextElement))
-                        {
-                            ClassifiedTextElement textElement = element.Elements.ElementAt(1) as ClassifiedTextElement;
-                            if (textElement.Runs.Count() == 1)
-                            {
-                                ClassifiedTextRun run = textElement.Runs.ElementAt(0);
-                                return run.Text;
-                            }
-                            else if (textElement.Runs.Count() > 1)
-                            {
-                                var str = new StringBuilder();
-                                foreach (var run in textElement.Runs)
-                                {
-                                    str.Append(run.Text);
-                                }
-                                return str.ToString();
-                            }
-                        }
-                        break;
-                    }
-                    break;
-                }
+                return null;
             }
+
+            IntelliSenseTranslationHelper.PretreatPlainText(ref str);
+            if (string.IsNullOrEmpty(str))
+            {
+                return null;
+            }
+
+            string translated = await IntelliSenseTranslationHelper.GetOrTranslateAsync(str, cancellationToken)
+                .ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(translated))
+            {
+                return IntelliSenseTranslationHelper.ComposeClassifiedRunsWithTranslation(translated);
+            }
+
             return null;
         }
 
-        private static string TryGetCppMethodInformation(IEnumerable<object> elements)
+        /// <summary>
+        /// 优先从已聚合的会话内容提取；若尚未就绪，则向其它 Quick Info 源查询文档文本。
+        /// </summary>
+        private static async Task<string> TryGetMethodInformationAsync(
+            IAsyncQuickInfoSession session,
+            string typeName,
+            ITextBuffer subjectBuffer,
+            IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> otherProviders,
+            CancellationToken cancellationToken)
         {
-            if (elements.Count() > 3 &&
-                elements.ElementAt(2).GetType() == typeof(ContainerElement))
+            if (string.Equals(subjectBuffer?.ContentType?.TypeName, "sighelp-doc", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(subjectBuffer?.ContentType?.TypeName, "sighelp", StringComparison.OrdinalIgnoreCase))
             {
-                var element = elements.ElementAt(2) as ContainerElement;
-                if (element.Elements.Count() == 1 &&
-                    element.Elements.ElementAt(0).GetType() == typeof(ClassifiedTextElement))
+                string bufferText = QuickInfoDocumentationExtractor.TryExtractFromSubjectBuffer(subjectBuffer);
+                if (!string.IsNullOrEmpty(bufferText))
                 {
-                    var textElement = element.Elements.ElementAt(0) as ClassifiedTextElement;
-                    if (textElement.Runs.Count() == 1)
-                    {
-                        var run = textElement.Runs.ElementAt(0);
-                        return run.Text;
-                    }
-                    else if (textElement.Runs.Count() > 1)
-                    {
-                        if (textElement.Runs.ElementAt(0).Text.IndexOf("扩展到:") != -1 ||
-                            textElement.Runs.ElementAt(0).Text.IndexOf("大小:") != -1)
-                        {
-                            return null;
-                        }
+                    return bufferText;
+                }
+            }
 
-                        var str = new StringBuilder();
-                        foreach (var run in textElement.Runs)
-                        {
-                            var temp = run.Text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "");
-                            StringPretreatment(ref temp);
-                            str.Append(temp);
-                        }
-                        return str.ToString();
+            string text = QuickInfoDocumentationExtractor.TryExtract(session, typeName);
+            if (!string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            if (otherProviders == null || subjectBuffer == null)
+            {
+                return null;
+            }
+
+            foreach (Lazy<IAsyncQuickInfoSourceProvider, IOrderable> lazy in OrderPeerProviders(otherProviders))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                IAsyncQuickInfoSource source = lazy.Value.TryCreateQuickInfoSource(subjectBuffer);
+                if (source == null)
+                {
+                    continue;
+                }
+
+                using (source)
+                {
+                    QuickInfoItem item = await source.GetQuickInfoItemAsync(session, cancellationToken)
+                        .ConfigureAwait(false);
+                    text = QuickInfoDocumentationExtractor.TryExtractFromQuickInfoItem(item, typeName);
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        return text;
                     }
                 }
             }
+
             return null;
         }
 
-        private static void CreateClassifiedTextRun(List<ApiResponse> formats, out List<ClassifiedTextRun> runs)
+        private static IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> OrderPeerProviders(
+            IEnumerable<Lazy<IAsyncQuickInfoSourceProvider, IOrderable>> providers)
         {
-            runs = new List<ClassifiedTextRun>();
-
-            for (int i = 0; i < formats.Count; i++)
-            {
-                var temp = (i == formats.Count - 1) ? "" : "\n";
-                if (formats[i].Success)
-                {
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.Keyword, $"[ok]"));
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.Comment, $"{formats[i].TargetText}{temp}"));
-                }
-                else if (string.IsNullOrEmpty(formats[i].TargetText))
-                {
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.String, $"[{formats[i].Message}]"));
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.Comment, $"{formats[i].SourceText}{temp}"));
-                }
-                else
-                {
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.Keyword, $"[{formats[i].Message}]"));
-                    runs.Add(new ClassifiedTextRun(
-                        PredefinedClassificationTypeNames.Comment, $"{formats[i].TargetText}{temp}"));
-                }
-            }
+            return providers
+                .Where(p => p.Metadata?.Name != ProviderName
+                    && p.Metadata?.Name != "Default Quick Info Presenter")
+                .OrderBy(p => GetProviderPriority(p.Metadata?.Name));
         }
 
-        private static void StringPretreatment(ref string str)
+        /// <summary>
+        /// IOrderable 仅含 Name/Before/After，无 Order；按名称启发式优先语言服务 Provider。
+        /// </summary>
+        private static int GetProviderPriority(string name)
         {
-            var count = 0;
-            var temp = str.TrimStart();
-            foreach (var s in temp)
+            if (string.IsNullOrEmpty(name))
             {
-                if (char.IsPunctuation(s))
-                {
-                    count++;
-                }
-                else
-                {
-                    break;
-                }
+                return 100;
             }
-            str = temp.Substring(count).Trim();
-        }
 
+            if (name.IndexOf("Roslyn", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || name.IndexOf("Semantic", System.StringComparison.OrdinalIgnoreCase) >= 0
+                || name.IndexOf("CSharp", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return 0;
+            }
+
+            if (string.Equals(name, "default", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return 1;
+            }
+
+            return 50;
+        }
     }
 }

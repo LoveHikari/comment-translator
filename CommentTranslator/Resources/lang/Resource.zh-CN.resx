@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -152,5 +152,23 @@
   </data>
   <data name="AutoTranslateQuickInfo_Description" xml:space="preserve">
     <value>鼠标指向函数、方法、变量、类、枚举等文本时，翻译弹出时的部分快速信息文本</value>
+  </data>
+  <data name="AutoTranslateCompletion_DisplayName" xml:space="preserve">
+    <value>翻译 IntelliSense 补全说明</value>
+  </data>
+  <data name="AutoTranslateCompletion_Description" xml:space="preserve">
+    <value>在代码补全列表中查看条目说明时，在原始说明下方追加翻译结果（如 XML 文档摘要）。</value>
+  </data>
+  <data name="AutoTranslateSignatureHelp_DisplayName" xml:space="preserve">
+    <value>翻译签名帮助</value>
+  </data>
+  <data name="AutoTranslateSignatureHelp_Description" xml:space="preserve">
+    <value>在键入「(」等方法调用时显示的签名帮助中，翻译方法说明与各 &lt;param&gt; 参数文档；不翻译签名行本身，以免破坏当前参数的粗体高亮位置。</value>
+  </data>
+  <data name="AutoTranslateCompletionDisplay_DisplayName" xml:space="preserve">
+    <value>翻译补全列表展示文本</value>
+  </data>
+  <data name="AutoTranslateCompletionDisplay_Description" xml:space="preserve">
+    <value>开启后，翻译补全列表中含描述性内容的 DisplayText（不翻译符号名与 InsertText）。每轮补全会话最多翻译 20 项以保证性能。</value>
   </data>
 </root>
